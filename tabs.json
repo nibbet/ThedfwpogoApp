@@ -1,0 +1,20 @@
+[
+  {
+    "id": "info",
+    "label": "Meetup<br>Info",
+    "file": "tabs/info.md",
+    "visible": true
+  },
+  {
+    "id": "day1",
+    "label": "Day 1<br>Info",
+    "file": "tabs/day1.md",
+    "visible": true
+  },
+  {
+    "id": "day2",
+    "label": "Day 2<br>Info",
+    "file": "tabs/day2.md",
+    "visible": false
+  }
+]

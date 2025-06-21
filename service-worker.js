@@ -1,56 +1,27 @@
-self.addEventListener('install', event => {
+self.addEventListener('install', function(event) {
   event.waitUntil(
-    caches.open('go-fest-cache').then(cache => {
+    caches.open('dfwfest-cache').then(function(cache) {
       return cache.addAll([
+        './',
         './index.html',
+        './style.css',
+        './app.js',
+        './tabs.json',
+        './tabs/info.md',
+        './tabs/day1.md',
+        './tabs/day2.md',
         './manifest.json',
         './icon-192.png',
         './icon-512.png'
-        // Add other static assets here if needed
       ]);
     })
   );
-  self.skipWaiting(); // Activate worker immediately
 });
 
-self.addEventListener('fetch', event => {
+self.addEventListener('fetch', function(event) {
   event.respondWith(
-    fetch(event.request)
-      .then(networkResponse => {
-        // Skip caching if response is invalid or a redirect
-        if (
-          !networkResponse ||
-          networkResponse.status !== 200 ||
-          networkResponse.type === 'opaqueredirect'
-        ) {
-          return networkResponse;
-        }
-
-        // Clone and cache valid response
-        const responseClone = networkResponse.clone();
-        caches.open('go-fest-cache').then(cache => {
-          cache.put(event.request, responseClone);
-        });
-
-        return networkResponse;
-      })
-      .catch(() => {
-        // Fallback to cache if fetch fails (e.g., offline)
-        return caches.match(event.request);
-      })
+    caches.match(event.request).then(function(response) {
+      return response || fetch(event.request);
+    })
   );
-});
-
-self.addEventListener('activate', event => {
-  // Clean up old caches if you use versioning
-  event.waitUntil(
-    caches.keys().then(cacheNames =>
-      Promise.all(
-        cacheNames
-          .filter(cache => cache !== 'go-fest-cache')
-          .map(cache => caches.delete(cache))
-      )
-    )
-  );
-  self.clients.claim(); // Take control of open tabs
 });
