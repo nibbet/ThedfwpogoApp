@@ -7,13 +7,13 @@
   },
   {
     "id": "day1",
-    "label": "Day 1<br>Info",
+    "label": "Raid Info",
     "file": "tabs/day1.md",
     "visible": true
   },
   {
     "id": "day2",
-    "label": "Day 2<br>Info",
+    "label": "Event Info",
     "file": "tabs/day2.md",
     "visible": false
   }
