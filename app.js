@@ -1,61 +1,64 @@
-let currentTab = 0;
-let tabIds = [];
-
-async function loadDynamicContent() {
-  try {
-    const response = await fetch('data.json');
-    const data = await response.json();
-    const tabButtons = document.getElementById('tab-buttons');
-    const tabContentsContainer = document.getElementById('tab-contents');
-
-    tabButtons.innerHTML = '';
-    tabContentsContainer.innerHTML = '';
-    tabIds = [];
-
-    data.tabs.forEach((tab, index) => {
-      tabIds.push(tab.id);
-
-      const button = document.createElement('button');
-      button.className = 'tab-button' + (index === 0 ? ' active' : '');
-      button.setAttribute('onclick', `showTab('${tab.id}', event)`);
-      button.setAttribute('role', 'tab');
-      button.setAttribute('aria-selected', index === 0);
-      button.innerHTML = tab.label;
-      tabButtons.appendChild(button);
-
-      const tabDiv = document.createElement('div');
-      tabDiv.id = tab.id;
-      tabDiv.className = 'tab-content' + (index === 0 ? ' active' : '');
-      tabDiv.innerHTML = `<h2>${tab.title}</h2>`;
-
-      if (tab.html) tabDiv.innerHTML += tab.html;
-
-      if (tab.meetups) {
-        tabDiv.innerHTML += '<ul>' + tab.meetups.map(m => `<li><a href="${m.link}" target="_blank">${m.location}</a></li>`).join('') + '</ul>';
-      }
-
-      if (tab.raids) {
-        tabDiv.innerHTML += '<h3>🔍 Raids</h3>';
-        Object.entries(tab.raids).forEach(([tier, mons]) => {
-          tabDiv.innerHTML += `<details><summary>${tier} Raids</summary><ul>${mons.map(mon => `<li>${mon}</li>`).join('')}</ul></details>`;
-        });
-      }
-
-      tabContentsContainer.appendChild(tabDiv);
-    });
-  } catch (err) {
-    console.error('Failed to load JSON:', err);
+const tabs = [
+  {
+    id: "info",
+    label: "Meetup<br>Info",
+    file: "tabs/info.md",
+    fallback: "# Event Info & Tips\n- 🔋 Bring a power bank\n- 💧 Stay hydrated\n- 📍 Use Campfire or Discord"
+  },
+  {
+    id: "day1",
+    label: "Day 1<br>Info",
+    file: "tabs/day1.md",
+    fallback: "# Day 1 Meetups\n- [Klyde Warren Park](https://cmpf.re/yZHF8Q)\n- [Haggard Park](https://cmpf.re/SEmS0i)"
+  },
+  {
+    id: "day2",
+    label: "Day 2<br>Info",
+    file: "tabs/day2.md",
+    fallback: "# Day 2 Meetups\n- [NorthPark Mall](https://cmpf.re/ykUh9Y)\n- [Grapevine Mills Mall](https://cmpf.re/4mBmj0)"
   }
+];
+
+let currentTab = 0;
+let tabIds = tabs.map(t => t.id);
+
+function createTabs() {
+  const tabButtons = document.getElementById('tab-buttons');
+  const tabContents = document.getElementById('tab-contents');
+  tabButtons.innerHTML = '';
+  tabContents.innerHTML = '';
+
+  tabs.forEach((tab, index) => {
+    const button = document.createElement('button');
+    button.className = 'tab-button' + (index === 0 ? ' active' : '');
+    button.setAttribute('onclick', `showTab('${tab.id}')`);
+    button.innerHTML = tab.label;
+    tabButtons.appendChild(button);
+
+    const div = document.createElement('div');
+    div.id = tab.id;
+    div.className = 'tab-content' + (index === 0 ? ' active' : '');
+    div.innerHTML = "<p>Loading...</p>";
+    tabContents.appendChild(div);
+
+    fetch(tab.file)
+      .then(res => {
+        if (!res.ok) throw new Error("File not found");
+        return res.text();
+      })
+      .then(md => div.innerHTML = marked.parse(md))
+      .catch(() => div.innerHTML = marked.parse(tab.fallback));
+  });
 }
 
-function showTab(tabId, event) {
+function showTab(tabId) {
   const tabs = document.querySelectorAll('.tab-content');
   const buttons = document.querySelectorAll('.tab-button');
   tabs.forEach(tab => tab.classList.remove('active'));
-  buttons.forEach((btn, idx) => {
+  buttons.forEach((btn, i) => {
     btn.classList.remove('active');
     btn.setAttribute('aria-selected', 'false');
-    if (tabIds[idx] === tabId) {
+    if (tabIds[i] === tabId) {
       btn.classList.add('active');
       btn.setAttribute('aria-selected', 'true');
     }
@@ -64,4 +67,4 @@ function showTab(tabId, event) {
   currentTab = tabIds.indexOf(tabId);
 }
 
-document.addEventListener('DOMContentLoaded', loadDynamicContent);
+document.addEventListener('DOMContentLoaded', createTabs);
