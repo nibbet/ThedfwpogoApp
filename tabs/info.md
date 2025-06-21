@@ -78,11 +78,4 @@ Check out all the details below and prepare your teams — it’s time to GO!
 	- **Water Pulse** (Glaceon)
 	- **Psychic Shock** (Sylveon)
 	
-	### ✅ Check-in Bonus
-	- Complete 1 Party Challenge → **10 Pinap Berries**
-	- Trade 1 Pokémon → **5 Ultra Balls**
-	- Catch 30 Pokémon → **5000 XP**
-	- **Page Complete** → x1 Star Piece, x1 Lure, x1 Incense
-
-
-</details>
+	### ✅ Che
