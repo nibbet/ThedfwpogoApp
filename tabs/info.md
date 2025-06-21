@@ -1,6 +1,6 @@
 ## 🎉 Upcoming Pokémon GO Events: June 30 – July 5, 2025
 
-Get ready, Trainers! We've got a packed week of exciting events:
+Get ready, Trainers! We've got a packed week of exciting events
 
 - 🛡️ **June 30**: Max Monday featuring **Shuckle** — tank up and earn extra MP!
 - ⚔️ **July 2**: Raid Hour with the legendary **Cobalion** — shiny available!
